@@ -3,12 +3,25 @@
 import os
 import tempfile
 
-from libfcg.common import processutils as putils
+from pydm.common import processutils as putils
 
 def execute(cmd, *args, **kwargs):
 	(out, ret) = putils.execute(cmd, *args, **kwargs)
 	out = out.strip()
 	return out
+
+def get_major_minor(path):
+    if os.path.islink(path):
+        path=os.path.realpath(path)
+    try:
+        disk, major_minor = execute('ls', '-l', path, '|awk \'{print $4 "\t"  $5$6}\'').split('\t')
+        assert disk == 'disk', '%s is not a disk!' % path
+    except Exception, e:
+        print e
+        return 0, 0
+    else:
+        major, minor = map(int, major_minor.split(','))
+        return major, minor
 
 def get_dev_sector_count(dev):
 	if not os.path.exists(dev):
@@ -24,7 +37,8 @@ def get_dev_sector_count(dev):
 	return devSector
 
 def get_devname_from_major_minor(major_minor):
-	return '/dev/' + os.readlink('/dev/block/%s' % major_minor)[3:]
+	#return '/dev/' + os.readlink('/dev/block/%s' % major_minor)[3:]
+    return os.path.realpath('/dev/block/%s' % major_minor)
 
 def write2tempfile(content):
 	temp = tempfile.NamedTemporaryFile(delete=False)

@@ -65,7 +65,8 @@ class Dmsetup(executor.Executor):
     def multipath(self, name, disks):
         multipath_table = ''
         size = utils.get_dev_sector_count(disks[0])
-        multipath_table += '0 %d multipath 0 0 1 1 queue-length 0 2 1 ' % size
+        count = len(disks)
+        multipath_table += '0 %d multipath 0 0 1 1 queue-length 0 %d 1 ' % (size, count)
         for disk in disks:
             multipath_table += disk + ' 128 '
         multipath_table += '\n'
