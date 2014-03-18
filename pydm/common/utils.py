@@ -14,13 +14,15 @@ def get_major_minor(path):
     if os.path.islink(path):
         path=os.path.realpath(path)
     try:
-        disk, major_minor = execute('ls', '-l', path, '|awk \'{print $4 "\t"  $5$6}\'').split('\t')
+        out = execute('ls', '-l', path).split()
+        disk = out[3]
         assert disk == 'disk', '%s is not a disk!' % path
+        major = int(out[4][:-1])
+        minor = int(out[5])
     except Exception, e:
-        print e
+        raise(e)
         return 0, 0
     else:
-        major, minor = map(int, major_minor.split(','))
         return major, minor
 
 def get_dev_sector_count(dev):
@@ -37,7 +39,6 @@ def get_dev_sector_count(dev):
 	return devSector
 
 def get_devname_from_major_minor(major_minor):
-	#return '/dev/' + os.readlink('/dev/block/%s' % major_minor)[3:]
     return os.path.realpath('/dev/block/%s' % major_minor)
 
 def write2tempfile(content):

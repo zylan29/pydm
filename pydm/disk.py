@@ -24,27 +24,35 @@ class Disk:
         self.major = 0
         self.minor = 0
 
+
     @staticmethod
-    def from_path(self, path):
+    def from_error(size):
+        disk = Disk()
+        disk.size = size
+        disk.set_error()
+        return disk
+
+    @staticmethod
+    def from_path(path):
         if os.path.exists(path):
             disk = Disk()
             disk.dev = os.path.realpath(path)
             disk.size = utils.get_dev_sector_count(disk.dev)
             disk.major, disk.minor = utils.get_major_minor(disk.dev)
-            disk.major_minor = ':'.join([disk.major, disk.minor])
-            self.mapper = 'linear'
+            disk.major_minor = ':'.join(map(str, [disk.major, disk.minor]))
+            disk.mapper = 'linear'
             
             return disk
         else:
             raise Exception('disk %s does NOT exist!'%path)
 
     @staticmethod
-    def from_line(self, line):
+    def from_line(line):
         disk = Disk()
         line_list = line.split()
         length = len(line_list)
         disk.size = int(line_list[1])
-        self.mapper = line_list[2]
+        disk.mapper = line_list[2]
 
         if length == 5:
             disk.major_minor = line_list[3]

@@ -2,18 +2,22 @@
 from pydm.disk import Disk
 from pydm.dmsetup import Dmsetup
 
-class LinearTable():
+class LinearTable:
     def __init__(self, name):
         self.name = name
         self.disks = []
+        self.path = ''
         self.dm = Dmsetup()
+        self.existed = False
 
         if self.dm.is_exist(self.name):
+            self.existed = True
+            self.path = '/dev/mapper/%s' % self.name
             table = self.dm.get_table(self.name)
             self.disks = self._parse_table(table)
 
     def __str__(self):
-        _compute_starts(self);
+        self._compute_starts();
         return '\n'.join(map(str, self.disks))
 
     def _parse_table(self, table):
@@ -25,14 +29,22 @@ class LinearTable():
                 disks.append(disk)
         return disks
 
-    def _compute_starts():
+    def _compute_starts(self):
         start=0;
         for disk in self.disks:
             disk.start = start
             start += disk.size
 
-    def _reload_table(self):
-        dm.reload_table(self.name, str(self))
+    def reload_table(self):
+        self.dm.reload_table(self.name, str(self))
+
+    def create_table(self):
+        if self.existed:
+            raise "%s has been existed! \n Try reload_table" % self.name
+        else:
+            self.path = self.dm.create_table(self.name, str(self))
+            self.existed = True
+
 
     def insert_disk(self, newdisk):
         for i in range(len(self.disks)):
@@ -47,7 +59,7 @@ class LinearTable():
                 self.disks.insert(i, newdisk)
             elif disk.size == newdisk.size:
                 self.disks[i]= newdisk
-            self._reload()
+            self.reload_table()
             return True
         return False
 
@@ -55,7 +67,7 @@ class LinearTable():
         length = len(self.disks)
         for i in range(length):
             disk = self.disks[i]
-            if disk.mapper =='linear' and disk.major_minor == thedisk.major_minor:
+            if disk.major_minor == thedisk.major_minor:
                 disk.set_error()
                 pre_disk = None
                 post_disk = None
@@ -64,9 +76,31 @@ class LinearTable():
                 if i < length - 1:
                     post_disk = self.disks[i+1]
                 for adisk in [pre_disk, post_disk]:
-                    if adisk.mapper == 'error':
-                        disk.size += adisk.size
-                        self.disks.remove(adisk)
-                self._reload()
+                    if adisk:
+                        if adisk.mapper == 'error':
+                            disk.size += adisk.size
+                            self.disks.remove(adisk)
+                self.reload_table()
                 return True
         return False
+
+    def find_disk(self, thedisk):
+        if type(thedisk) == str:
+            thedisk = Disk.from_path(thedisk)
+        for disk in self.disks:
+            if disk.major_minor == thedisk.major_minor:
+                return disk
+        return None
+
+    @staticmethod
+    def from_disks(name, disks):
+        linear_table = LinearTable(name)
+        for disk in disks:
+            if type(disk) == str:
+                linear_table.disks.append(Disk.from_path(disk))
+            elif isinstance(disk, Disk):
+                linear_table.disks.append(disk)
+            else:
+                raise "Unknown type of %s" % disk
+        linear_table.create_table()
+        return linear_table
