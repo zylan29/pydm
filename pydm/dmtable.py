@@ -85,7 +85,7 @@ class LinearTable:
         return False
 
     def find_disk(self, thedisk):
-        if type(thedisk) == str:
+        if not isinstance(thedisk, Disk):
             thedisk = Disk.from_path(thedisk)
         for disk in self.disks:
             if disk.major_minor == thedisk.major_minor:
