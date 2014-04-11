@@ -40,7 +40,7 @@ class LinearTable:
 
     def create_table(self):
         if self.existed:
-            raise "%s has been existed! \n Try reload_table" % self.name
+            raise Exception("%s has been existed! \n Try reload_table" % self.name)
         else:
             self.path = self.dm.create_table(self.name, str(self))
             self.existed = True
@@ -101,6 +101,6 @@ class LinearTable:
             elif isinstance(disk, Disk):
                 linear_table.disks.append(disk)
             else:
-                raise "Unknown type of %s" % disk
+                raise Exception("Unknown type of %s" % disk)
         linear_table.create_table()
         return linear_table
