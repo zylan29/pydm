@@ -3,6 +3,7 @@
 from pydm.common import executor
 from pydm.common import processutils as putils
 from pydm.common import utils
+from pydm.blockdev import Blockdev
 
 
 class Dmsetup(executor.Executor):
@@ -18,7 +19,7 @@ class Dmsetup(executor.Executor):
     def is_exist(self, name):
         try:
             self.get_table(name)
-        except:
+        except Exception, e:
             return False
         else:
             return True
@@ -46,15 +47,17 @@ class Dmsetup(executor.Executor):
         return out
 
     def origin(self, origin_name, origin_dev):
-        origin_size = utils.get_dev_sector_count(origin_dev)
+        block = Blockdev(root_helper=self._root_helper)
+        origin_size = block.get_sector_count(origin_dev)
         origin_table = '0 %d snapshot-origin %s' % (origin_size, origin_dev)
         self.create_table(origin_name, origin_table)
         origin_path = self.mapdev_prefix + origin_name
         return origin_path
 
     def snapshot(self, origin_path, snapshot_name, snapshot_dev):
-        origin_size = utils.get_dev_sector_count(origin_path)
-        snapshot_size = utils.get_dev_sector_count(snapshot_dev)
+        block = Blockdev(root_helper=self._root_helper)
+        origin_size = block.get_sector_count(origin_path)
+        snapshot_size = block.get_sector_count(snapshot_dev)
         snapshot_table = '0 %d snapshot %s %s N 128' % (origin_size, origin_path, snapshot_dev)
         self.create_table(snapshot_name, snapshot_table)
         snapshot_path = self.mapdev_prefix + snapshot_name
@@ -62,7 +65,8 @@ class Dmsetup(executor.Executor):
 
     def multipath(self, name, disks):
         multipath_table = ''
-        size = utils.get_dev_sector_count(disks[0])
+        block = Blockdev(root_helper=self._root_helper)
+        size = block.get_sector_count(disks[0])
         count = len(disks)
         multipath_table += '0 %d multipath 0 0 1 1 queue-length 0 %d 1 ' % (size, count)
         for disk in disks:
