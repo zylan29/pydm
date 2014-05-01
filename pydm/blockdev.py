@@ -30,11 +30,11 @@ class Blockdev(executor.Executor):
 
     def get_major_minor(self, dev):
         if os.path.islink(dev):
-            path = os.path.realpath(dev)
+            dev = os.path.realpath(dev)
         try:
-            out = self._execute('ls', '-l', path).split()
+            out = self._execute('ls', '-l', dev).split()
             disk = out[3]
-            assert disk == 'disk', '%s is not a disk!' % path
+            assert disk == 'disk', '%s is not a disk!' % dev
             major = int(out[4][:-1])
             minor = int(out[5])
         except Exception, e:
