@@ -6,7 +6,7 @@ AUTHOR_EMAIL="lzynudt@gmail.com"
 URL="https://github.com/anzigly/pydm"
 setup(
     name=NAME,
-    version="0.2.2",
+    version="0.2.4",
     description=DESCRIPTION,
     long_description=open("README.md").read(),
     author=AUTHOR,
