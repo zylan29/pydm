@@ -32,8 +32,8 @@ class Blockdev(executor.Executor):
         if os.path.islink(dev):
             dev = os.path.realpath(dev)
         try:
-            (out, ret) = self._execute('ls', '-l', dev).split()
-            out = out.strip()
+            (out, ret) = self._execute('ls', '-l', dev)
+            out = out.strip().split()
             disk = out[3]
             assert disk == 'disk', '%s is not a disk!' % dev
             major = int(out[4][:-1])
