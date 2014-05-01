@@ -13,7 +13,7 @@ class Blockdev(executor.Executor):
     def _run_blockdev(self, *args):
         (out, err) = self._execute('blockdev', *args, run_as_root=True, root_helper=self._root_helper)
         out = out.strip()
-        return out, err
+        return out
 
     def get_sector_count(self, dev):
         if not os.path.exists(dev):
