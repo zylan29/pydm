@@ -28,8 +28,8 @@ class Disk(Blockdev):
         self.minor = 0
 
     @staticmethod
-    def from_error(size):
-        disk = Disk()
+    def from_error(size, root_helper=''):
+        disk = Disk(root_helper=root_helper)
         disk.size = size
         disk.set_error()
         return disk

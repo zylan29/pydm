@@ -93,11 +93,11 @@ class LinearTable:
         return None
 
     @staticmethod
-    def from_disks(name, disks):
-        linear_table = LinearTable(name)
+    def from_disks(name, disks, root_helper=''):
+        linear_table = LinearTable(name, root_helper=root_helper)
         for disk in disks:
             if type(disk) == str:
-                linear_table.disks.append(Disk.from_path(disk, root_helper=self.root_helper))
+                linear_table.disks.append(Disk.from_path(disk, root_helper=root_helper))
             elif isinstance(disk, Disk):
                 linear_table.disks.append(disk)
             else:
