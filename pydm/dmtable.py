@@ -3,11 +3,12 @@ from pydm.dmsetup import Dmsetup
 
 
 class LinearTable:
-    def __init__(self, name):
+    def __init__(self, name, root_helper=''):
+        self.root_helper = root_helper
         self.name = name
         self.disks = []
         self.path = ''
-        self.dm = Dmsetup()
+        self.dm = Dmsetup(root_helper=root_helper)
         self.existed = False
 
         if self.dm.is_exist(self.name):
@@ -17,15 +18,14 @@ class LinearTable:
             self.disks = self._parse_table(table)
 
     def __str__(self):
-        self._compute_starts();
+        self._compute_starts()
         return '\n'.join(map(str, self.disks))
 
-    @staticmethod
-    def _parse_table(table):
+    def _parse_table(self, table):
         disks = []
         lines = table.split('\n')
         for line in lines:
-            disk = Disk.from_line(line)
+            disk = Disk.from_line(line, root_helper=self.root_helper)
             if disk:
                 disks.append(disk)
         return disks
@@ -86,7 +86,7 @@ class LinearTable:
 
     def find_disk(self, thedisk):
         if not isinstance(thedisk, Disk):
-            thedisk = Disk.from_path(thedisk)
+            thedisk = Disk.from_path(thedisk, root_helper=self.root_helper)
         for disk in self.disks:
             if disk.major_minor == thedisk.major_minor:
                 return disk
@@ -97,7 +97,7 @@ class LinearTable:
         linear_table = LinearTable(name)
         for disk in disks:
             if type(disk) == str:
-                linear_table.disks.append(Disk.from_path(disk))
+                linear_table.disks.append(Disk.from_path(disk, root_helper=self.root_helper))
             elif isinstance(disk, Disk):
                 linear_table.disks.append(disk)
             else:

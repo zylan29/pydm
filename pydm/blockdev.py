@@ -27,3 +27,17 @@ class Blockdev(executor.Executor):
         if dev_sector <= 0:
             raise Exception('Device %s is EMPTY...' % dev)
         return dev_sector
+
+    def get_major_minor(self, dev):
+        if os.path.islink(dev):
+            path = os.path.realpath(dev)
+        try:
+            out = self._execute('ls', '-l', path).split()
+            disk = out[3]
+            assert disk == 'disk', '%s is not a disk!' % path
+            major = int(out[4][:-1])
+            minor = int(out[5])
+        except Exception, e:
+            raise e
+        else:
+            return major, minor

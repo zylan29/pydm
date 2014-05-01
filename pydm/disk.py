@@ -1,11 +1,13 @@
 
 import os
 
+from pydm.blockdev import Blockdev
 from pydm.common import utils
 
 
-class Disk: 
-    def __init__(self):
+class Disk(Blockdev):
+    def __init__(self, root_helper=''):
+        super(Disk, self).__init__(root_helper=root_helper)
         self.start = 0
         self.size = 0
         self.mapper = ''
@@ -25,7 +27,6 @@ class Disk:
         self.major = 0
         self.minor = 0
 
-
     @staticmethod
     def from_error(size):
         disk = Disk()
@@ -34,12 +35,12 @@ class Disk:
         return disk
 
     @staticmethod
-    def from_path(path):
+    def from_path(path, root_helper=''):
         if os.path.exists(path):
-            disk = Disk()
+            disk = Disk(root_helper=root_helper)
             disk.dev = os.path.realpath(path)
-            disk.size = utils.get_dev_sector_count(disk.dev)
-            disk.major, disk.minor = utils.get_major_minor(disk.dev)
+            disk.size = disk.get_sector_count(disk.dev)
+            disk.major, disk.minor = disk.get_major_minor(disk.dev)
             disk.major_minor = ':'.join(map(str, [disk.major, disk.minor]))
             disk.mapper = 'linear'
             
@@ -48,8 +49,8 @@ class Disk:
             raise Exception('disk %s does NOT exist!'%path)
 
     @staticmethod
-    def from_line(line):
-        disk = Disk()
+    def from_line(line, root_helper=''):
+        disk = Disk(root_helper=root_helper)
         line_list = line.split()
         length = len(line_list)
         disk.size = int(line_list[1])
