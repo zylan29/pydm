@@ -1,21 +1,19 @@
 #!/usr/bin/env python
 
-import os
 from pydm.common import executor
 from pydm.common import processutils as putils
 from pydm.common import utils
 
 
 class Dmsetup(executor.Executor):
-    def __init__(self, mapdev_prefix = '/dev/mapper/', execute=putils.execute):
-        super(Dmsetup, self).__init__(root_helper='', execute=execute)
+    def __init__(self, mapdev_prefix='/dev/mapper/', root_helper='', execute=putils.execute):
+        super(Dmsetup, self).__init__(root_helper, execute=execute)
         self.mapdev_prefix = mapdev_prefix
 
     def _run_dmsetup(self, dmsetup_command, *args):
-        (out, err) = self._execute('dmsetup', dmsetup_command, *args,
-                                    run_as_root=True)
+        (out, err) = self._execute('dmsetup', dmsetup_command, *args, run_as_root=True, root_helper=self._root_helper)
         out = out.strip()
-        return (out, err)
+        return out, err
 
     def is_exist(self, name):
         try:
@@ -53,7 +51,7 @@ class Dmsetup(executor.Executor):
         self.create_table(origin_name, origin_table)
         origin_path = self.mapdev_prefix + origin_name
         return origin_path
-        
+
     def snapshot(self, origin_path, snapshot_name, snapshot_dev):
         origin_size = utils.get_dev_sector_count(origin_path)
         snapshot_size = utils.get_dev_sector_count(snapshot_dev)
@@ -72,11 +70,3 @@ class Dmsetup(executor.Executor):
         multipath_table += '\n'
         self.create_table(name, multipath_table)
         return self.mapdev_prefix + name
-
-        
-
-if __name__ == '__main__':
-    dm = Dmsetup()
-    dm.snapshot('origin', '/dev/loop1', 'snapshot', '/dev/loop0')
-    print dm.get_table('origin')
-    print dm.get_table('snapshot')

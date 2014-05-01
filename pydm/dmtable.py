@@ -1,6 +1,6 @@
-
 from pydm.disk import Disk
 from pydm.dmsetup import Dmsetup
+
 
 class LinearTable:
     def __init__(self, name):
@@ -20,7 +20,8 @@ class LinearTable:
         self._compute_starts();
         return '\n'.join(map(str, self.disks))
 
-    def _parse_table(self, table):
+    @staticmethod
+    def _parse_table(table):
         disks = []
         lines = table.split('\n')
         for line in lines:
@@ -30,7 +31,7 @@ class LinearTable:
         return disks
 
     def _compute_starts(self):
-        start=0;
+        start = 0
         for disk in self.disks:
             disk.start = start
             start += disk.size
@@ -45,7 +46,6 @@ class LinearTable:
             self.path = self.dm.create_table(self.name, str(self))
             self.existed = True
 
-
     def insert_disk(self, newdisk):
         for i in range(len(self.disks)):
             disk = self.disks[i]
@@ -53,12 +53,12 @@ class LinearTable:
             if disk.mapper != 'error' or disk.size < newdisk.size:
                 continue
             newdisk.start = disk.start
-            if disk.size>newdisk.size:
+            if disk.size > newdisk.size:
                 disk.size -= newdisk.size
                 disk.start += newdisk.size
                 self.disks.insert(i, newdisk)
             elif disk.size == newdisk.size:
-                self.disks[i]= newdisk
+                self.disks[i] = newdisk
             self.reload_table()
             return True
         return False
@@ -72,9 +72,9 @@ class LinearTable:
                 pre_disk = None
                 post_disk = None
                 if i >= 1:
-                    pre_disk = self.disks[i-1]
+                    pre_disk = self.disks[i - 1]
                 if i < length - 1:
-                    post_disk = self.disks[i+1]
+                    post_disk = self.disks[i + 1]
                 for adisk in [pre_disk, post_disk]:
                     if adisk:
                         if adisk.mapper == 'error':
