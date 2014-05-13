@@ -52,11 +52,10 @@ class Disk(Blockdev):
     def from_line(line, root_helper=''):
         disk = Disk(root_helper=root_helper)
         line_list = line.split()
-        length = len(line_list)
+        disk.start = int(line_list[0])
         disk.size = int(line_list[1])
         disk.mapper = line_list[2]
-
-        if length == 5:
+        if disk.mapper == 'linear':
             disk.major_minor = line_list[3]
             disk.dev = utils.get_devname_from_major_minor(disk.major_minor)
             disk.offset = int(line_list[4])
