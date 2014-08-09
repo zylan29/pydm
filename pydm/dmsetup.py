@@ -7,6 +7,9 @@ from pydm.blockdev import Blockdev
 
 
 class Dmsetup(executor.Executor):
+    """
+    A python wrap for dmsetup command.
+    """
     def __init__(self, mapdev_prefix='/dev/mapper/', root_helper='', execute=putils.execute):
         super(Dmsetup, self).__init__(root_helper, execute=execute)
         self.mapdev_prefix = mapdev_prefix

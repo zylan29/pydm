@@ -5,6 +5,7 @@
 
 # Packages
 .idea
+pydm.iml
 *.egg
 *.egg-info
 dist

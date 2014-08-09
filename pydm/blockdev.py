@@ -22,7 +22,7 @@ class Blockdev(executor.Executor):
         if not isinstance(dev_sector, int):
             try:
                 dev_sector = int(dev_sector)
-            except Exception, e:
+            except ValueError:
                 return 0
         if dev_sector <= 0:
             raise Exception('Device %s is EMPTY...' % dev)
@@ -42,3 +42,19 @@ class Blockdev(executor.Executor):
             raise e
         else:
             return major, minor
+
+    def get_path_from_major_minor(self, major, minor=''):
+        disk_prefix = '/dev/block/'
+        if minor:
+            if major.find(':') == -1:
+                major_minor = str(major) + ':' + str(minor)
+            else:
+                raise ValueError()
+        else:
+            if major.find(':') == -1:
+                raise ValueError()
+            else:
+                major_minor = major
+        path = os.readlink(disk_prefix + major_minor)
+        path = os.path.realpath(disk_prefix + path)
+        return path
