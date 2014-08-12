@@ -1,12 +1,13 @@
 from setuptools import setup, find_packages
-NAME="pydm"
-DESCRIPTION="python binding for linux device mapper"
-AUTHOR="Ziyang Li"
-AUTHOR_EMAIL="lzynudt@gmail.com"
-URL="https://github.com/anzigly/pydm"
+
+NAME = "pydm"
+DESCRIPTION = "python binding for linux device mapper"
+AUTHOR = "Ziyang Li"
+AUTHOR_EMAIL = "anzigly@gmail.com"
+URL = "https://github.com/anzigly/pydm"
 setup(
     name=NAME,
-    version="0.3.1",
+    version="0.3.2",
     description=DESCRIPTION,
     long_description=open("README.md").read(),
     author=AUTHOR,

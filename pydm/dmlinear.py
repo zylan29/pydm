@@ -1,5 +1,5 @@
-from pydm.lineardisk import LinearDisk
-from dmtable import Table
+from pydm.disk import Disk
+from pydm.dmtable import Table
 
 
 class DmLinearTable(Table):
@@ -22,51 +22,10 @@ class DmLinearTable(Table):
         disks = []
         lines = table.split('\n')
         for line in lines:
-            disk = LinearDisk.from_line(line, root_helper=self.root_helper)
+            disk = Disk.from_line(line, root_helper=self.root_helper)
             if disk:
                 disks.append(disk)
         return disks
-
-    def find_disk(self, the_disk):
-        if not isinstance(the_disk, LinearDisk):
-            the_disk = LinearDisk.from_path(the_disk, root_helper=self.root_helper)
-        for disk in self.disks:
-            if disk.major_minor == the_disk.major_minor:
-                return disk
-        return None
-
-    def insert_disk(self, new_disk):
-        return NotImplementedError()
-
-    def remove_disk(self, the_disk):
-        return NotImplementedError()
-
-    @staticmethod
-    def from_disks(name, disks, root_helper='', cls=None):
-        if not cls:
-            cls = DmLinearTable
-        linear_table = cls(name, root_helper=root_helper)
-        for disk in disks:
-            if type(disk) == str:
-                linear_table.disks.append(LinearDisk.from_path(disk, root_helper=root_helper))
-            elif isinstance(disk, LinearDisk):
-                linear_table.disks.append(disk)
-            else:
-                raise Exception("Unknown type of %s" % disk)
-        linear_table.create_table()
-        return linear_table
-
-
-class CommonDmLinearTable(DmLinearTable):
-    """
-    A common realization for linear table.
-    """
-    def __init__(self, name, root_helper=''):
-        super(CommonDmLinearTable, self).__init__(name, root_helper=root_helper)
-
-    def __str__(self):
-        self._compute_starts()
-        return '\n'.join(map(str, self.disks))
 
     def _compute_starts(self):
         start = 0
@@ -74,10 +33,18 @@ class CommonDmLinearTable(DmLinearTable):
             disk.start = start
             start += disk.size
 
+    def find_disk(self, the_disk):
+        if not isinstance(the_disk, Disk):
+            the_disk = Disk.from_path(the_disk, root_helper=self.root_helper)
+        for disk in self.disks:
+            if disk.major_minor == the_disk.major_minor:
+                return disk
+        return None
+
     def insert_disk(self, new_disk):
         """
         Insert new disk to the first big enough space.
-        :param new_disk:
+        :param new_disk: a disk inserts to linear table.
         :return: True if insert successful, otherwise false.
         """
         for i in range(len(self.disks)):
@@ -95,6 +62,20 @@ class CommonDmLinearTable(DmLinearTable):
             self.reload_table()
             return True
         return False
+
+    def append_disk(self, new_disk):
+        """
+        Append a new disk to the tail of linear table.
+        :param new_disk:
+        :return: None
+        """
+        empty_disk = self.disks[-1]
+        assert empty_disk.size > new_disk.size, 'NO sufficient space left'
+        new_disk.start = empty_disk.start
+        empty_disk.size -= new_disk.size
+        empty_disk.start += new_disk.size
+        self.disks.insert(-1, new_disk)
+        self.reload_table()
 
     def remove_disk(self, the_disk):
         length = len(self.disks)
@@ -118,6 +99,16 @@ class CommonDmLinearTable(DmLinearTable):
         return False
 
     @staticmethod
-    def from_disks(name, disks, root_helper=''):
-        linear_table = DmLinearTable.from_disks(name, disks, root_helper=root_helper, cls=CommonDmLinearTable)
+    def from_disks(name, disks, root_helper='', cls=None):
+        if not cls:
+            cls = DmLinearTable
+        linear_table = cls(name, root_helper=root_helper)
+        for disk in disks:
+            if type(disk) == str:
+                linear_table.disks.append(Disk.from_path(disk, root_helper=root_helper))
+            elif isinstance(disk, Disk):
+                linear_table.disks.append(disk)
+            else:
+                raise Exception("Unknown type of %s" % disk)
+        linear_table.create_table()
         return linear_table
