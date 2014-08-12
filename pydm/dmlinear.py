@@ -59,6 +59,7 @@ class DmLinearTable(Table):
                 self.disks.insert(i, new_disk)
             elif disk.size == new_disk.size:
                 self.disks[i] = new_disk
+            self._compute_starts()
             self.reload_table()
             return True
         return False
@@ -75,6 +76,7 @@ class DmLinearTable(Table):
         empty_disk.size -= new_disk.size
         empty_disk.start += new_disk.size
         self.disks.insert(-1, new_disk)
+        self._compute_starts()
         self.reload_table()
 
     def remove_disk(self, the_disk):
@@ -94,6 +96,7 @@ class DmLinearTable(Table):
                         if adisk.mapper == 'error':
                             disk.size += adisk.size
                             self.disks.remove(adisk)
+                self._compute_starts()
                 self.reload_table()
                 return True
         return False
