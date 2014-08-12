@@ -98,6 +98,12 @@ class DmLinearTable(Table):
                 return True
         return False
 
+    def exists(self, disk):
+        for a_disk in self.disks:
+            if disk.major_minor == a_disk.major_minor:
+                return True
+        return False
+
     @staticmethod
     def from_disks(name, disks, root_helper='', cls=None):
         if not cls:
