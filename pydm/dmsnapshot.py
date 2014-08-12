@@ -3,6 +3,9 @@ from dmtable import Table
 
 
 class DmOrigin(Table):
+    """
+    Snapshot-origin based on device mapper.
+    """
 
     def __init__(self, name, root_helper=''):
         super(DmOrigin, self).__init__(name, 'snapshot-origin', root_helper=root_helper)
