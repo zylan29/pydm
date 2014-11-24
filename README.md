@@ -1,4 +1,44 @@
-pydm
-====
+What's pydm
+======
 
-python binding for linux device mapper
+A python wrapper for linux device mapper command.
+
+
+Features of pydm
+======
+
+* Execute linux device mapper command(dmsetup) in your python script.
+* Easy to use, avoid fussy arguments of the command.
+
+Supported mapping methods:
+1. Linear
+* Snapshot
+* Multipath
+
+How to get pydm
+======
+
+From pypi:
+
+  > https://pypi.python.org/pypi/pydm/
+
+Or if you are using git then use the following command:
+
+  > git clone https://github.com/anzigly/pydm
+
+Usage of pydm
+======
+Build linear map from hrad disks:
+```python
+from pydm.dmlinear import DmLinearTable
+hdd_group = DmLinearTable.from_disks(group_name, [hdd_1, hdd_2], root_helper='sudo')
+```
+Related Projects
+======
+flashcachegroup: Making FB's flashcache to cache a group of disks with a single SSD
+
+  > https://github.com/lihuiba/flashcachegroup
+
+vritman: Booting 1000 VMs in a minute!
+
+  >https://github.com/vmthunder/virtman
