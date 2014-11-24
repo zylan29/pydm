@@ -1,16 +1,17 @@
 What's pydm
 ======
 
-A python wrapper for linux device mapper command.
+A python wrapper for linux device mapper command(dmsetup).
 
 
 Features of pydm
 ======
 
-* Execute linux device mapper command(dmsetup) in your python script.
+* Execute dmsetup in your python script.
 * Easy to use, avoid fussy arguments of the command.
 
 Supported mapping methods:
+
 1. Linear
 * Snapshot
 * Multipath
