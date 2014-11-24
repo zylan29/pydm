@@ -25,6 +25,12 @@ Or if you are using git then use the following command:
 
   > git clone https://github.com/anzigly/pydm
 
+Installation
+======
+```
+python setup.py install
+```
+
 Sample usage
 ======
 Build linear map from two hard disks:
