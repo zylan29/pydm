@@ -25,9 +25,9 @@ Or if you are using git then use the following command:
 
   > git clone https://github.com/anzigly/pydm
 
-Usage of pydm
+Sample usage
 ======
-Build linear map from hrad disks:
+Build linear map from two hard disks:
 ```python
 from pydm.dmlinear import DmLinearTable
 hdd_group = DmLinearTable.from_disks(group_name, [hdd_1, hdd_2], root_helper='sudo')
