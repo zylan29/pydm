@@ -23,7 +23,7 @@ From pypi:
 
 Or if you are using git then use the following command:
 
-  > git clone https://github.com/anzigly/pydm
+  > git clone https://github.com/anzigly/pydm.git
 
 Installation
 ======
