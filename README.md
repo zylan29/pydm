@@ -39,5 +39,6 @@ flashcachegroup: Making FB's flashcache to cache a group of disks with a single 
   > https://github.com/lihuiba/flashcachegroup
 
 vritman: Booting 1000 VMs in a minute!
+  > http://www.vmthunder.org
 
-  >https://github.com/vmthunder/virtman
+  > https://github.com/vmthunder/virtman
