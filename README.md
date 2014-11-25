@@ -5,7 +5,7 @@ A python wrapper for linux device mapper command(dmsetup).
 
 
 Features of pydm
-======
+------
 
 * Execute dmsetup in your python script.
 * Easy to use, avoid fussy arguments of the command.
@@ -15,7 +15,7 @@ Features of pydm
   * Multipath
 
 How to get pydm
-======
+------
 
 From pypi:
 
@@ -26,18 +26,25 @@ Or if you are using git then use the following command:
   > git clone https://github.com/anzigly/pydm.git
 
 Installation
-======
+------
 ```
 python setup.py install
 ```
 
 Sample usage
 ======
+Linear
+------
 Build linear map from two hard disks:
 ```python
 from pydm.dmlinear import DmLinearTable
 hdd_group = DmLinearTable.from_disks(group_name, [hdd_1, hdd_2], root_helper='sudo')
 ```
+Snapshot
+------
+
+Multipath
+------
 Related Projects
 ======
 flashcachegroup: Making FB's flashcache to cache a group of disks with a single SSD
