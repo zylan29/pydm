@@ -17,13 +17,7 @@ Features of pydm
 How to get pydm
 ------
 
-From pypi:
-
-  > https://pypi.python.org/pypi/pydm/
-
-Or if you are using git then use the following command:
-
-  > git clone https://github.com/anzigly/pydm.git
+  > git clone https://github.com/zylan29/pydm.git
 
 Installation
 ------
