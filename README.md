@@ -16,8 +16,9 @@ Features of pydm
 
 How to get pydm
 ------
-
-  > git clone https://github.com/zylan29/pydm.git
+```
+git clone https://github.com/zylan29/pydm.git
+```
 
 Installation
 ------
