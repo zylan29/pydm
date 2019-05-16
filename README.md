@@ -12,8 +12,8 @@ Features of pydm
 * Supported multiple mapping methods.
 
   1. Linear
-  * Snapshot
-  * Multipath
+  2. Snapshot
+  3. Multipath
 
 How to get pydm
 ------
