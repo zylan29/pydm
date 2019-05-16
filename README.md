@@ -10,6 +10,7 @@ Features of pydm
 * Execute dmsetup in your python script.
 * Easy to use, avoid fussy arguments of the command.
 * Supported multiple mapping methods.
+
   1. Linear
   * Snapshot
   * Multipath
